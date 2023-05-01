@@ -1,0 +1,9 @@
+**/__pycache__/
+**/bin/
+.vscode/
+**/lib/
+
+/binance-api/include/
+binance-api/lib/**
+binance-api/sal-demo.txt
+binance-api/sal-demo2.txt
