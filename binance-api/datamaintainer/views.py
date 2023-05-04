@@ -2,9 +2,11 @@ from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from config import Config
 from django.utils import timezone
-import datetime
+from . import models
+import json
 from django_q.tasks import async_task, result
 from django_q.models import Task
+from django.db.models import F, Max, Q
 
 Task.objects.all().delete()
 
@@ -14,13 +16,28 @@ configs = Config()
 
 
 def fetch_data(request):
-    if request.method == 'GET':
+    if request.method == 'PUT':
         symbol = request.GET.get('symbol')
-        if not symbol:
+        isAll = request.GET.get("all")
+        if not symbol and not isAll:
             return JsonResponse({"message": "Symbol param is missing"}, status=400)
-        interval = '1d'
-        task = async_task("datamaintainer.tasks.data_updater", symbol)
+        task = async_task("datamaintainer.tasks.data_updater", symbol, isAll)
         result(task)
         return JsonResponse({"message": "Done"})
     else:
-        return JsonResponse({"message": "Only GET is allowed at the end point"}, status=405)
+        return JsonResponse({"message": "Only PUT is allowed at the end point"}, status=405)
+    
+def update_symbol_list(request):
+    if request.method == 'PUT':
+        task = async_task("datamaintainer.tasks.symbol_updater")
+        print(result(task))
+        return JsonResponse({"message": "Done"})
+    else:
+        return JsonResponse({"message": "Only PUT is allowed at the end point"}, status=405)
+    
+def fetch_all_available_data(request):
+    if request.method == 'GET':
+        latest_close_time = models.KlineAllSymbol.objects.aggregate(Max('close_date_time'))['close_date_time__max']
+        latest_data = models.KlineAllSymbol.objects.filter(close_date_time=latest_close_time).values('symbol', 'rsma')
+        print(dict(latest_data.values_list('symbol', 'rsma')))
+    return JsonResponse({"message": dict(latest_data.values_list('symbol', 'rsma'))})

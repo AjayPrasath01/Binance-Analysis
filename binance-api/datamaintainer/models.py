@@ -11,15 +11,14 @@ class ParanoidModel(models.Model):
         abstract = True
 
     def save(self, *args, **kwargs):
-        aware_datetime = timezone.make_aware(datetime.datetime.now(), timezone.get_default_timezone())
+        _datetime = datetime.datetime.now()
         if not self.created_at:
-            self.created_at = aware_datetime
-        self.updated_at = aware_datetime
+            self.created_at = _datetime
+        self.updated_at = _datetime
         super().save(*args, **kwargs)
 
     def delete(self):
-        aware_datetime = timezone.make_aware(datetime.datetime.now(), timezone.get_default_timezone())
-        self.deleted_at = aware_datetime
+        self.deleted_at = datetime.datetime.now()
         self.save()
 
     def undelete(self):
@@ -38,25 +37,43 @@ class KlineAllSymbol(ParanoidModel):
         db_table = "kline_all_symbol"
 
     objects = ParanoidManager()
-
     kline_all_id = models.AutoField(db_column="kline_all_id", null=False, primary_key=True)
-    open_time = models.CharField(db_column='open_time', max_length=200, null=True, default=None)
     open_date_time = models.DateTimeField(db_column='open_date_time', null=True, default=None)
-    open = models.IntegerField(db_column="open", null=True, default=None)
-    high = models.IntegerField(db_column="high", null=True, default=None)
-    low = models.IntegerField(db_column="low", null=True, default=None)
+    open = models.FloatField(db_column="open", null=True, default=None)
+    high = models.FloatField(db_column="high", null=True, default=None)
+    low = models.FloatField(db_column="low", null=True, default=None)
     close = models.FloatField(db_column="close", null=True, default=None)
     rsma = models.DecimalField(db_column="rsma", max_digits=10, decimal_places=8, null=True, default=None)
-    close_date = models.DateField(db_column="close_date", null=True, default=None)
-    volume = models.IntegerField(db_column='volume', null=True, default=None)
-    close_time = models.CharField(db_column='close_time', max_length=200, null=True, default=None)
+    rsma_200 = models.DecimalField(db_column="rsma_200", max_digits=10, decimal_places=8, null=True, default=None)
+    volume = models.FloatField(db_column='volume', null=True, default=None)
     close_date_time = models.DateTimeField(db_column='close_date_time', null=True, default=None)
-    quote_asset_volume = models.IntegerField(db_column="quote_asset_volume", null=True, default=None)
-    number_of_trades = models.IntegerField(db_column="number_of_trades", null=True, default=None)
-    taker_buy_base_asset_volume = models.IntegerField(db_column="taker_buy_base_asset_volume", null=True, default=None)
-    taker_buy_quote_asset_volume = models.IntegerField(db_column="taker_buy_quote_asset_volume", null=True, default=None)
-    ignore = models.IntegerField(db_column="ignore", null=True, default=None)
     symbol = models.CharField(db_column='symbol', max_length=200, null=True, default=None)
+    rsd = models.FloatField(db_column="rsd", null=True, default=None)
+
+    def save(self, *args, **kwargs):
+        _datetime = datetime.datetime.now()
+        if not self.created_at:
+            self.created_at = _datetime
+        self.updated_at = _datetime
+        if self.symbol != 'BTCUSD':
+            try:
+                existing_instance = KlineAllSymbol.objects.get(symbol='BTCUSD', close_date_time=self.close_date_time)
+                self.rsma = float(self.close) / existing_instance.close
+
+                last_datetime = self.close_date_time
+                start_datetime = last_datetime - datetime.timedelta(days=200)
+                result = KlineAllSymbol.objects.filter(symbol=self.symbol, close_date_time__range=(start_datetime, last_datetime, ))
+                # print(f"Start date {start_datetime} and end date {last_datetime} symbol {self.symbol}")
+                # print(f"Count : {result.count()}")
+                if result.count() == 200:
+                    self.rsma_200 = result.aggregate(avg_value=models.Avg('close'))['avg_value']
+                    self.rsd = ((self.rsma - self.rsma_200)/self.rsma_200) * 100
+                    print(self.)
+                    print(self.rsd)
+            except Exception as e:
+                print(e)
+                return
+        super().save(*args, **kwargs)
     
 
 class User(ParanoidModel):
@@ -81,5 +98,3 @@ class Symbol(ParanoidModel):
 
     id  = models.AutoField(db_column='id', primary_key=True)
     symbol = models.CharField(db_column='symbol', max_length=200)
-    price = models.IntegerField(db_column='price')
-    priority = models.IntegerField(default=1, db_column='priority')

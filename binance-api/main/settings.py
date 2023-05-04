@@ -47,7 +47,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -95,19 +95,25 @@ Q_CLUSTER = {
     'name': 'data_handler_cluster',
     'workers': 2,
     'timeout': 172800,
-    'bulk': 1,
     'retry': 120,
     'queue_limit': 50,
     'bulk': 10,
     'orm': 'default',
     'mysql': True,
     'schedule': {
-        'my-scheduled-task': {
+        'data-updater': {
             'type': 'datamaintainer.tasks.data_updater',
             'schedule': {
                 'every_day': {'at': '00:00'},
             },
         },
+        'symbole-updater': {
+            'type': 'datamaintainer.tasks.symbol_updater',
+            'schedule': {
+                'every_three_days': {'at': '00:00'},
+                'interval': 3,  
+            },
+        }
     },
 }
 
@@ -130,6 +136,8 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+APPEND_SLASH=False
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
@@ -142,7 +150,7 @@ USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
