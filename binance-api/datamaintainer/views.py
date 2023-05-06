@@ -8,8 +8,6 @@ from django_q.tasks import async_task, result
 from django_q.models import Task
 from django.db.models import F, Max, Q
 
-Task.objects.all().delete()
-
 # Create your views here.
 
 configs = Config()
@@ -38,6 +36,6 @@ def update_symbol_list(request):
 def fetch_all_available_data(request):
     if request.method == 'GET':
         latest_close_time = models.KlineAllSymbol.objects.aggregate(Max('close_date_time'))['close_date_time__max']
-        latest_data = models.KlineAllSymbol.objects.filter(close_date_time=latest_close_time).values('symbol', 'rsma')
-        print(dict(latest_data.values_list('symbol', 'rsma')))
-    return JsonResponse({"message": dict(latest_data.values_list('symbol', 'rsma'))})
+        latest_data = models.KlineAllSymbol.objects.filter(close_date_time=latest_close_time).values('symbol', 'rsd')
+        print(dict(latest_data.values_list('symbol', 'rsd')))
+    return JsonResponse(dict(latest_data.values_list('symbol', 'rsd')))

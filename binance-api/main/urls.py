@@ -15,9 +15,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from datamaintainer import urls
+from django.urls import re_path
+from django.views.static import serve
+from django.views.generic import TemplateView
+from . import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('data/', include('datamaintainer.urls')),
+    path('api/data/', include('datamaintainer.urls')),
+    path('', views.index, name='index'),
+    # re_path(r'^(?P<path>.+\..+)$', views.file_handler, name='file_handler'),
 ]

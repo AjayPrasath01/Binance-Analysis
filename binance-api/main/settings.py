@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 import pymysql 
+import os
 
 pymysql.install_as_MySQLdb()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -38,9 +39,10 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles',
     'datamaintainer',
     'django_q',
+    'django_cron',
+    'django.contrib.staticfiles',
 ]
 
 MIDDLEWARE = [
@@ -55,10 +57,20 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'main.urls'
 
+CRON_CLASSES = [
+    'datamaintainer.cron.DataUpdaterCronJob',
+    # 'datamaintainer.cron.SymbolUpdaterCronJob',
+]
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static/static'),
+    os.path.join(BASE_DIR, 'static'),
+]
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'static'),],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -104,7 +116,8 @@ Q_CLUSTER = {
         'data-updater': {
             'type': 'datamaintainer.tasks.data_updater',
             'schedule': {
-                'every_day': {'at': '00:00'},
+                'every_minute': {},
+                # 'every_day': {'at': '12:14'},
             },
         },
         'symbole-updater': {
