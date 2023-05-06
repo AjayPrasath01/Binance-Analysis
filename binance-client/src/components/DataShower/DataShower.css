@@ -1,0 +1,16 @@
+.card{
+    background-color: white;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.201);
+    padding: 2em;
+    margin-top: 0.75em;
+    margin-bottom: 0.75em;
+    display: flex;
+    justify-content: space-between;
+    margin-left: 1em;
+    margin-right: 1em;
+    border-radius: 10px;
+}
+
+.symbol{
+    font-weight: bolder;
+}
