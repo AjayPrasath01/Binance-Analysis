@@ -1,6 +1,24 @@
 {
+    "isDebug": false,
+    "allowed_host": [ "*" ],
     "apikey": "ezdgFJZaMbC3v7peg73hIjTjBuqIglZWxbQDAcro6mYPFutE0Rei0UjWZzhSFR8H",
     "secret": "sLOQidfnJUOsqh2AnFoWPLlKIJdSZkKIdCaKs2xz1yCCdqgzCLX6zgnojJKya7JK",
     "symbols_to_hold": 20,
-    "moving_average": 200
+    "moving_average": 200,
+    "database": { 
+        "name": "xrtdxm_biance",
+        "username": "root",
+        "password": "Snehaajay01@",
+        "host": "localhost",
+        "port": "3306"
+    },
+    "q_cluster":{
+        "name": "data_adders",
+        "workers": 2,
+        "timeout": 172800,
+        "retry": 5,
+        "queue_limit": 10,
+        "bulk": 10
+    } 
+    
 }

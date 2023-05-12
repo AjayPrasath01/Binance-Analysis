@@ -13,6 +13,9 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 from pathlib import Path
 import pymysql 
 import os
+from config import Config
+
+configs = Config()
 
 pymysql.install_as_MySQLdb()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -26,9 +29,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-95m)93khm84f6e^-eue$@%x$&z_o07zffdp*h5)494a-h=51+$'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = configs.isDebug
 
-ALLOWED_HOSTS = [ '*' ]
+ALLOWED_HOSTS = configs.allowed_host
 
 
 # Application definition
@@ -86,11 +89,11 @@ WSGI_APPLICATION = 'main.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'xrtdxm_biance',
-        'USER': 'root',
-        'PASSWORD': 'Snehaajay01@',
-        'HOST': 'localhost',
-        'PORT': '3306',
+        'NAME': configs.database['name'],
+        'USER': configs.database['username'],
+        'PASSWORD': configs.database['password'],
+        'HOST': configs.database['host'],
+        'PORT': configs.database['port'],
         'OPTIONS': {
             'charset': 'utf8mb4',
         },
@@ -98,12 +101,12 @@ DATABASES = {
 }
 
 Q_CLUSTER = {
-    'name': 'data_handler_cluster',
-    'workers': 2,
-    'timeout': 172800,
-    'retry': 120,
-    'queue_limit': 50,
-    'bulk': 10,
+    'name': configs.q_cluster['name'],
+    'workers': configs.q_cluster['workers'],
+    'timeout': configs.q_cluster['timeout'],
+    'retry': configs.q_cluster['retry'],
+    'queue_limit': configs.q_cluster['queue_limit'],
+    'bulk': configs.q_cluster['bulk'],
     'orm': 'default',
     'mysql': True,
 }
@@ -127,7 +130,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-APPEND_SLASH=False
+APPEND_SLASH=True
 
 
 # Internationalization
