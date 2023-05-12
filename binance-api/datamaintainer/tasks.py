@@ -2,9 +2,9 @@ from datamaintainer.models import KlineAllSymbol, Symbol
 from config import Config
 import datetime
 import pytz
+from django_q.tasks import async_task, schedule
 
 configs = Config()
-
 
 def data_updater(symbol=None, isAll=False):
     if symbol is None:

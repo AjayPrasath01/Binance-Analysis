@@ -28,7 +28,7 @@ SECRET_KEY = 'django-insecure-95m)93khm84f6e^-eue$@%x$&z_o07zffdp*h5)494a-h=51+$
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [ '*' ]
 
 
 # Application definition
@@ -41,7 +41,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'datamaintainer',
     'django_q',
-    'django_cron',
     'django.contrib.staticfiles',
 ]
 
@@ -56,11 +55,6 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'main.urls'
-
-CRON_CLASSES = [
-    'datamaintainer.cron.DataUpdaterCronJob',
-    # 'datamaintainer.cron.SymbolUpdaterCronJob',
-]
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static/static'),
@@ -112,22 +106,6 @@ Q_CLUSTER = {
     'bulk': 10,
     'orm': 'default',
     'mysql': True,
-    'schedule': {
-        'data-updater': {
-            'type': 'datamaintainer.tasks.data_updater',
-            'schedule': {
-                'every_minute': {},
-                # 'every_day': {'at': '12:14'},
-            },
-        },
-        'symbole-updater': {
-            'type': 'datamaintainer.tasks.symbol_updater',
-            'schedule': {
-                'every_three_days': {'at': '00:00'},
-                'interval': 3,  
-            },
-        }
-    },
 }
 
 

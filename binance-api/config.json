@@ -1,5 +1,6 @@
 {
     "apikey": "ezdgFJZaMbC3v7peg73hIjTjBuqIglZWxbQDAcro6mYPFutE0Rei0UjWZzhSFR8H",
     "secret": "sLOQidfnJUOsqh2AnFoWPLlKIJdSZkKIdCaKs2xz1yCCdqgzCLX6zgnojJKya7JK",
-    "symbols_to_hold": 20
+    "symbols_to_hold": 20,
+    "moving_average": 200
 }
