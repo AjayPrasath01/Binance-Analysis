@@ -1,0 +1,38 @@
+.login{
+    flex-direction: column;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate3d(-50%, -50%, 0);
+    border-radius: 10px;
+}
+
+.button{
+    margin: 1em;
+    padding: 1em;
+}
+
+.label{
+    margin-left: 1em;
+}
+
+.warning-text{
+    color: red;
+    display: none;
+}
+
+.input{
+    width: 30vw;
+}
+
+@media screen and (max-width: 800px) {
+    .input{
+        width: 60vw;
+
+    }
+
+    .login{
+        margin-left: auto;
+        margin-right: auto;
+    }
+}

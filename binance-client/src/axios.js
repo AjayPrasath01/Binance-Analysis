@@ -3,5 +3,6 @@ export const SERVER = undefined;
 
 export default axios.create({
 	baseURL: SERVER,
-	timeout: 5000,
+	timeout: 15000,
+	withCredentials: true
 });
