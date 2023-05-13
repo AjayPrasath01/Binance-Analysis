@@ -27,7 +27,7 @@ urlpatterns = [
     path('', views.index, name='index'),
     path('api/login/', views.login_view, name='login'),
     path('api/logout/', views.logout_view, name='logout'),
-    re_path(r'^.*$', TemplateView.as_view(template_name='index.html')),
+    re_path(r'^(?!static/).*$', TemplateView.as_view(template_name='index.html')),
     re_path(r'^static/(?P<path>.*)$', serve,{'document_root': settings.STATIC_ROOT})
     # re_path(r'^(?P<path>.+\..+)$', views.file_handler, name='file_handler'),
 ]
